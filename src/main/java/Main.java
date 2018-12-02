@@ -1,32 +1,20 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.Map;
+
+import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
 
 public class Main {
 
-    private static List<Integer> input() throws IOException {
-        return Files.lines(Paths.get("input.txt"))
-                .map(Integer::valueOf)
-                .collect(Collectors.toList());
-    }
-
     public static void main(String[] args) throws IOException {
-        Integer sum = 0;
-        Set<Integer> sums = new HashSet<>();
-        outer : while (true) {
-            for (Integer i : input()) {
-                sum += i;
-                if (sums.contains(sum)) {
-                    break outer;
-                } else {
-                    sums.add(sum);
-                }
-            }
-        }
-        System.out.println(sum);
+        Map<Long, Long> result = Files.lines(Paths.get("input.txt"))
+                .map(s -> Arrays.stream(s.split("")).collect(groupingBy(identity(), counting())))
+                .flatMap(i -> i.values().stream().distinct())
+                .collect(groupingBy(identity(), counting()));
+        System.out.println(result.get(2L) * result.get(3L));
     }
 }
