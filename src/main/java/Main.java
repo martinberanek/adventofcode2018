@@ -1,20 +1,29 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Map;
-
-import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.counting;
-import static java.util.stream.Collectors.groupingBy;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        Map<Long, Long> result = Files.lines(Paths.get("input.txt"))
-                .map(s -> Arrays.stream(s.split("")).collect(groupingBy(identity(), counting())))
-                .flatMap(i -> i.values().stream().distinct())
-                .collect(groupingBy(identity(), counting()));
-        System.out.println(result.get(2L) * result.get(3L));
+        List<String> list = Files.lines(Paths.get("input.txt")).collect(Collectors.toList());
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = i + 1; j < list.size(); j++) {
+                String result = samechars(list.get(i), list.get(j));
+                if (result.length() == list.get(i).length() - 1) {
+                    System.out.println(result);
+                }
+            }
+        }
     }
+
+    private static String samechars(String s1, String s2) {
+        String result = "";
+        for (int i = 0; i < s1.length(); i++) {
+            result += s1.charAt(i) == s2.charAt(i) ? s1.charAt(i) : "";
+        }
+        return result;
+    }
+
 }
